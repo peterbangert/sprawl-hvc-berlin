@@ -1,0 +1,23 @@
+server {
+    server_name sprawl.hvc.berlin;
+    listen 80;
+    access_log /var/log/nginx/sprawl-hvc-berlin.log;
+    error_log /var/log/nginx/sprawl-hvc-berlin_error.log info;
+
+    root /home/student-super/sprawl-hvc-berlin/public;
+
+    # do not log haproxy httpchecks
+    location /hello {
+        access_log off;
+        add_header Content-Type text/html;
+        return 200 '<html><body>Hello World</body></html>';
+        break;
+    }
+
+    location /api/v1{
+        proxy_set_header Host $host;
+        proxy_pass http://unix:/home/student-super/sprawl-hvc-berlin/flask/backend.sock;
+
+    }
+}
+
