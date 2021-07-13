@@ -43,6 +43,53 @@
 }
 
 
+.shadow {
+	-moz-box-shadow: 0 0 1px 1px #efefef;
+	-webkit-box-shadow: 0 0 1px 1px #efefef;
+	box-shadow: 0 0 0px 1px #efefef;
+	padding: 20px;
+	border-radius: 5px;
+	display: flex;
+	justify-content: center;
+}
+
+.shadow-rounded {
+	-moz-box-shadow: 0 0 1px 1px #efefef;
+	-webkit-box-shadow: 0 0 1px 1px #efefef;
+	box-shadow: 0 0 0px 0px #efefef;
+	padding: 20px;
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+}
+
+.icon-flipped {
+	transform: scaleX(-1);
+	-moz-transform: scaleX(-1);
+	-webkit-transform: scaleX(-1);
+	-ms-transform: scaleX(-1);
+}
+
+
+#container{
+	width: 300px;
+	display: block;
+	margin: auto;
+}
+
+p {
+	float: right;
+}
+
+#list{
+	list-style: none;
+}
+
+#list li{
+
+	cursor: pointer;
+}
+
 /**
  *
  * Extend this class on any element of your
