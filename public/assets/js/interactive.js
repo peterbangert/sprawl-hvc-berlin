@@ -43,7 +43,14 @@ $(document).ready(function () {
             url: "http://localhost:5000/api/v1/submit",
             data: {
                 "name": name,
-                "guess": randomized,
+                0: randomized[0],
+                1: randomized[1],
+                2: randomized[2],
+                3: randomized[3],
+                4: randomized[4],
+                5: randomized[5],
+                6: randomized[6],
+                7: randomized[7]
 
             },
             success: function (result) {

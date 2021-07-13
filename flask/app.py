@@ -10,14 +10,42 @@ from pythonosc import osc_server, udp_client
 SC_IP = "127.0.0.1"
 SC_PORT = 57123
 
+# Control Boundaries
+MAX_REVERB = 1.0
+MIN_REVERB = 0.0
+MULTIPLIER_REVERB = 0.1
+MAX_DISTANCE = 50
+MIN_DISTANCE = -50
+MULTIPLIER_DISTANCE = 1.0
+MULTIPLIER_AZIMUTH = 0.25
+
+
 app = Flask(__name__)
 api = Api(app,prefix="/api/v1")
 CORS(app)
 
-parser = reqparse.RequestParser()
-parser.add_argument('operation')
-parser.add_argument('signal')
-parser.add_argument('source')
+# Arguments for control API
+signal_args = reqparse.RequestParser()
+signal_args.add_argument('operation')
+signal_args.add_argument('signal')
+signal_args.add_argument('source',type=int)
+
+
+# Arguments for control API
+submit_args = reqparse.RequestParser()
+submit_args.add_argument('name')
+submit_args.add_argument('0')
+submit_args.add_argument('1')
+submit_args.add_argument('2')
+submit_args.add_argument('3')
+submit_args.add_argument('4')
+submit_args.add_argument('5')
+submit_args.add_argument('6')
+submit_args.add_argument('7')
+
+
+
+# Setup Logging
 logging.basicConfig(filename='log/interactive-app_backend.log', level=logging.DEBUG)
 
 # OSC dispatcher must be global
@@ -25,75 +53,91 @@ dispatcher = dispatcher.Dispatcher()
 
 sources = {}
 
-for i in range(16):
+for i in range(8):
     sources[i] = {
         'reverb': 0,
-        'gain': 0,
-        'elevation': 0,
         'azimuth':0,
         'distance':0
     }
 
-def send_osc(src, val, signal):
-    app.logger.info("Sending osc update: {} {} {}".format(src,val,signal))
-    client = udp_client.SimpleUDPClient(SC_IP, SC_PORT)
-    if signal == 'azimuth':
-        client.send_message("/source/azim", [src, val])
-    elif signal == 'elevation':
-        client.send_message("/source/elev", [src, val])
-    elif signal == 'reverb':
-        client.send_message("/source/reverb", [src, val])
-    elif signal == 'distance':
-        client.send_message("/source/dist", [src, val])
-    elif signal == 'gain':
-        client.send_message("/monitor/gain", [src, val])
-    else:
-        app.logger.info("FAILURE, Incorrect signal: {} {} {}".format(src,val,signal))
+solution = ["Ben","Peter","Valentin","Simon","Laurin","Luzie","Roman","Christian"]
+results = {}
 
-class Handler(Resource):
+class SignalController(Resource):
     def post(self):
         app.logger.info("Handling Request")
-        args = parser.parse_args()
+        args = signal_args.parse_args()
 
         #Sanity Check
         if args.operation != 'increase' and args.operation != 'decrease' and args.operation != 'reset':
             return {"Do operation {} on signal {} to source {}".format(args.operation,args.signal,args.source): 'failure'}
 
+        current_value = sources[args.source][args.signal]
+        endpoint = ""
+        additive = 0
 
-        apply_source = []
-        if args.source == "All":
-            apply_source = [x for x in range(16)]
+        if args.operation == 'increase':
+            additive =1 
+        elif args.operation == 'decrease':
+            additive =-1
+        else :
+            additive = 0
+
+        if args.signal == 'azimuth':
+            endpoint = "/source/azim"
+            additive = additive * MULTIPLIER_AZIMUTH
+        elif args.signal == 'reverb':
+            endpoint = "/source/reverb"
+            additive = additive * MULTIPLIER_REVERB
+            new_value = current_value + additive
+            if new_value > MAX_REVERB or new_value < MIN_REVERB:
+                additive =  0
+        elif args.signal == 'distance':
+            endpoint = "/source/dist"
+            additive = additive * MULTIPLIER_DISTANCE
+            new_value = current_value + additive
+            if new_value > MAX_DISTANCE or new_value < MIN_DISTANCE:
+                additive =  0
         else:
-            apply_source = [int(args.source)]
+            app.logger.info("FAILURE, Incorrect signal: {} {} {}".format(args.operation,args.signal,str(args.source)))
 
-        app.logger.info("Applying on sources " + ','.join(str(e) for e in apply_source))
+        
+        new_value = current_value + additive
+        sources[args.source][args.signal] = new_value
 
-        for src in apply_source:
-            
-            new_value = sources[src][args.signal]    
-            
-            if args.operation == 'increase':
-                new_value +=1
-            elif args.operation == 'decrease':
-                new_value -=1
-            else :
-                new_value = 0
-            
-            
-            sources[src][args.signal] = new_value
 
-            send_osc(src,new_value,args.signal)
+        app.logger.info("Sending osc update: {} {} {}".format(args.source,new_value,args.signal))
+        client = udp_client.SimpleUDPClient(SC_IP, SC_PORT)
+
+        client.send_message(endpoint, [(args.source-1) *2, new_value])
+        client.send_message(endpoint, [(args.source-1) *2 +1, new_value])
             
 
-        return {"Do operation {} on signal {} to source {}".format(args.operation,args.signal,args.source): 'successful'}
+        return {"Do operation {} on signal {} to source {}".format(args.operation,args.signal,str(args.source)): 'successful'}
 
-class GetSources(Resource):
+class GetResults(Resource):
     def get(self):
         app.logger.info("Retrieving Sources")
-        return {"sources": 'N'}
+        return results
 
-api.add_resource(Handler,'/control')
-api.add_resource(GetSources,'/sources')
+
+class PostSubmit(Resource):
+    def post(self):
+        app.logger.info("Submitting Results")
+        args = submit_args.parse_args()
+        app.logger.info(args)
+        score = 0
+        for i in range(len(solution)):
+            if solution[i] == args[str(i)]:
+                score +=1
+        results[args.name] = score / 8
+
+        return {"Submissions": "succesful"}
+
+
+api.add_resource(SignalController,'/control')
+api.add_resource(GetResults,'/results')
+api.add_resource(PostSubmit,'/submit')
 
 
 if __name__ == '__main__':
