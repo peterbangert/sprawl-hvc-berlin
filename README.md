@@ -10,8 +10,8 @@
 The Audience Control project is a project designed to allow and encourage viewer participation in the performance. 
 
 
-1. First, the user can select one of the 8 various performers on the top of the screen by the numbered buttons,
-2. The controls will adjust the spatial signals of the respective performer. The audio controls provided are reverb, distance, and azimuth, 
+1. First, the user can select one of the 8 various performers on the top of the screen by the numbered buttons
+2. The controls will adjust the spatial signals of the respective performer. The audio controls provided are reverb, distance, and azimuth.
     - Reverb controls can increase or decrease the amount of signal reflection in the acoustic space.
     - Distance controls virtually how far the performer is from a center point
     - Azimuth controls at which angle the performer is from 0 degrees.
