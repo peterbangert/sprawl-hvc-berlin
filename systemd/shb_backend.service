@@ -1,0 +1,9 @@
+[Unit]
+Description=Gunicorn uWSGI for sprawl.hvc.berlin backend
+After=network.target
+
+[Service]
+User=student-super
+Group=student-super
+WorkingDirectory=/home/student-super/sprawl-hvc-berlin/backend
+ExecStart=gunicorn --workers 3 --bind unix:backend.sock -m 007 wsgi:app

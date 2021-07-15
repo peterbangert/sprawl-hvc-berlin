@@ -11,7 +11,7 @@ $(document).ready(function () {
         e.preventDefault();
         $.ajax({
             type: "POST",
-            url: "http://85.214.78.6:5000/api/v1/control",
+            url: "/api/v1/control",
             data: {
                 "operation": operation,
                 "signal": signal,
@@ -40,7 +40,7 @@ $(document).ready(function () {
         e.preventDefault();
         $.ajax({
             type: "POST",
-            url: "http://85.214.78.6:5000/api/v1/submit",
+            url: "/api/v1/submit",
             data: {
                 "name": name,
                 0: randomized[0],
