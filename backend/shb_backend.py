@@ -140,6 +140,7 @@ class PostSubmit(Resource):
                 score +=1
         results[args.name] = score
         app.logger.info("{} got score {}".format(args.name,score))
+        app.logger.info(results)
         return {"Submission from {}".format(args.name):"successful"}
 
 
