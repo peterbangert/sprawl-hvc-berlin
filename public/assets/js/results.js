@@ -1,6 +1,7 @@
 
   
 $(document).ready(function () {
+    
     $.ajax({
         type: "GET",
         url: "/api/v1/results",
@@ -14,8 +15,8 @@ $(document).ready(function () {
 
     var data = [
         {
-            x: ['giraffes', 'orangutans', 'monkeys'],
-            y: [20, 14, 23],
+            x: result.names,
+            y: result.scores,
             type: 'bar'
         }
         ];

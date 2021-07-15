@@ -69,7 +69,10 @@ for i in range(8):
     }
 
 solution = ['Ben', 'Peter', 'CScherz', 'Nils', 'Valentin', 'Simon', 'Laurin','CKastner','Luzie','Roman','Henrik']
-results = {}
+results = {
+    "names": [],
+    "scores": []
+}
 
 class SignalController(Resource):
     def post(self):
@@ -136,9 +139,9 @@ class PostSubmit(Resource):
         for i in range(len(solution)):
             if solution[i] == args[str(i)]:
                 score +=1
-        results[args.name] = str(score) +"/"+ str(len(solution))
-
-        return {"Submissions": "succesful"}
+        results["names"].append(args.name)
+        results["scores"].append(score)
+        return {"Submissions": "successful"}
 
 
 api.add_resource(SignalController,'/control')
