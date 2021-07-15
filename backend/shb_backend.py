@@ -59,8 +59,8 @@ logging.basicConfig(filename=logfile, level=logging.DEBUG)
 # OSC dispatcher must be global
 dispatcher = dispatcher.Dispatcher()
 
+# Setup source signal values
 sources = {}
-
 for i in range(1,12):
     sources[i] = {
         'reverb': 0,
@@ -68,11 +68,9 @@ for i in range(1,12):
         'distance':0
     }
 
+# Solution for Matching Game
 solution = ['Ben', 'Peter', 'CScherz', 'Nils', 'Valentin', 'Simon', 'Laurin','CKastner','Luzie','Roman','Henrik']
-results = {
-    "names": [],
-    "scores": []
-}
+results = {}
 
 class SignalController(Resource):
     def post(self):
@@ -127,7 +125,7 @@ class SignalController(Resource):
 class GetResults(Resource):
     def get(self):
         app.logger.info("Retrieving Sources")
-        return results
+        return {"name":results.keys(),"scores":results.values()}
 
 
 class PostSubmit(Resource):
@@ -139,8 +137,7 @@ class PostSubmit(Resource):
         for i in range(len(solution)):
             if solution[i] == args[str(i)]:
                 score +=1
-        results["names"].append(args.name)
-        results["scores"].append(score)
+        results[args.name] = score
         return {"Submission from {}".format(args.name):"successful"}
 
 
