@@ -138,6 +138,7 @@ class PostSubmit(Resource):
             if solution[i] == args[str(i)]:
                 score +=1
         results[args.name] = score
+        app.logger.info("{} got score {}".format(args.name,score))
         return {"Submission from {}".format(args.name):"successful"}
 
 
