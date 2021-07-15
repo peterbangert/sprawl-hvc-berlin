@@ -1,7 +1,6 @@
 
   
-$(document).ready(function (e) {
-    e.preventDefault();
+$(document).ready(function () {
     $.ajax({
         type: "GET",
         url: "/api/v1/results",
@@ -21,5 +20,5 @@ $(document).ready(function (e) {
         }
         ];
         
-        Plotly.newPlot('results-div', data);
+    Plotly.newPlot('results-div', data);
 });
