@@ -125,7 +125,7 @@ class SignalController(Resource):
 class GetResults(Resource):
     def get(self):
         app.logger.info("Retrieving Sources")
-        return {"name":list(results.keys()),"scores":list(results.values())}
+        return {"names":list(results.keys()),"scores":list(results.values())}
 
 
 class PostSubmit(Resource):
