@@ -10,6 +10,6 @@ sudo systemctl reload nginx.service
 
 echo "Starting Backend"
 # Start Flask
-(cd flask; python3 -m flask run --host=0.0.0.0 & )
+sudo systemctl restart shb_backend
 
 #sclang simple_SERVER.sc

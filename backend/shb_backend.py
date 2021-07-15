@@ -43,7 +43,9 @@ submit_args.add_argument('4')
 submit_args.add_argument('5')
 submit_args.add_argument('6')
 submit_args.add_argument('7')
-
+submit_args.add_argument('8')
+submit_args.add_argument('9')
+submit_args.add_argument('10')
 
 
 # Setup Logging
@@ -66,7 +68,7 @@ for i in range(8):
         'distance':0
     }
 
-solution = ["Ben","Peter","Valentin","Simon","Laurin","Luzie","Roman","Christian"]
+solution = ['Ben', 'Peter', 'CScherz', 'Nils', 'Valentin', 'Simon', 'Laurin','CKastner','Luzie','Roman','Henrik']
 results = {}
 
 class SignalController(Resource):
@@ -134,7 +136,7 @@ class PostSubmit(Resource):
         for i in range(len(solution)):
             if solution[i] == args[str(i)]:
                 score +=1
-        results[args.name] = score / 8
+        results[args.name] = str(score) +"/"+ str(len(solution))
 
         return {"Submissions": "succesful"}
 

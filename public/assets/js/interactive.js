@@ -50,7 +50,10 @@ $(document).ready(function () {
                 4: randomized[4],
                 5: randomized[5],
                 6: randomized[6],
-                7: randomized[7]
+                7: randomized[7],
+                8: randomized[8],
+                9: randomized[9],
+                10: randomized[10]
 
             },
             success: function (result) {
@@ -125,4 +128,4 @@ const setDragging = (e) =>{
 }
 
 // genRandom([0, 1, 2, 3, 4, 5, 6])
-genRandom(['Peter', 'Ben', 'Roman', 'Valentin', 'Simon', 'Laurin', 'Christian','Luzie'])
+genRandom(['Ben', 'Peter', 'CScherz', 'Nils', 'Valentin', 'Simon', 'Laurin','CKastner','Luzie','Roman','Henrik'])
