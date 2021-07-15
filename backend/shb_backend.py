@@ -141,7 +141,7 @@ class PostSubmit(Resource):
                 score +=1
         results["names"].append(args.name)
         results["scores"].append(score)
-        return {"Submissions": "successful"}
+        return results
 
 
 api.add_resource(SignalController,'/control')
