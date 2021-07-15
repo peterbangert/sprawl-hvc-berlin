@@ -8,7 +8,7 @@ from pythonosc import osc_server, udp_client
 
 # Super Collider Port and IP
 SC_IP = "127.0.0.1"
-SC_PORT = 57123
+SC_PORT = 57121
 
 # Control Boundaries
 MAX_REVERB = 1.0
@@ -75,13 +75,14 @@ class SignalController(Resource):
         current_value = sources[args.source][args.signal]
         endpoint = ""
         additive = 0
+        new_value = 0
 
         if args.operation == 'increase':
             additive =1 
         elif args.operation == 'decrease':
             additive =-1
         else :
-            additive = 0
+            new_value = 0
 
         if args.signal == 'azimuth':
             endpoint = "/source/azim"
@@ -103,6 +104,9 @@ class SignalController(Resource):
 
         
         new_value = current_value + additive
+        if args.operation == 'reset':
+            new_value = 0
+
         sources[args.source][args.signal] = new_value
 
 
