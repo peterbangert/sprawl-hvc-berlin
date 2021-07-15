@@ -75,14 +75,13 @@ class SignalController(Resource):
         current_value = sources[args.source][args.signal]
         endpoint = ""
         additive = 0
-        new_value = 0
 
         if args.operation == 'increase':
             additive =1 
         elif args.operation == 'decrease':
             additive =-1
         else :
-            new_value = 0
+            current_value = 0
 
         if args.signal == 'azimuth':
             endpoint = "/source/azim"
@@ -90,23 +89,18 @@ class SignalController(Resource):
         elif args.signal == 'reverb':
             endpoint = "/source/reverb"
             additive = additive * MULTIPLIER_REVERB
-            new_value = current_value + additive
-            if new_value > MAX_REVERB or new_value < MIN_REVERB:
+            if current_value + additive > MAX_REVERB or current_value + additive < MIN_REVERB:
                 additive =  0
         elif args.signal == 'distance':
             endpoint = "/source/dist"
             additive = additive * MULTIPLIER_DISTANCE
-            new_value = current_value + additive
-            if new_value > MAX_DISTANCE or new_value < MIN_DISTANCE:
+            if current_value + additive > MAX_DISTANCE or current_value + additive < MIN_DISTANCE:
                 additive =  0
         else:
             app.logger.info("FAILURE, Incorrect signal: {} {} {}".format(args.operation,args.signal,str(args.source)))
 
         
         new_value = current_value + additive
-        if args.operation == 'reset':
-            new_value = 0
-
         sources[args.source][args.signal] = new_value
 
 
