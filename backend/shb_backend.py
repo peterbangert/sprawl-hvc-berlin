@@ -61,7 +61,7 @@ dispatcher = dispatcher.Dispatcher()
 
 sources = {}
 
-for i in range(8):
+for i in range(1,12):
     sources[i] = {
         'reverb': 0,
         'azimuth':0,
@@ -141,7 +141,7 @@ class PostSubmit(Resource):
                 score +=1
         results["names"].append(args.name)
         results["scores"].append(score)
-        return results
+        return {"Submission from {}".format(args.name):"successful"}
 
 
 api.add_resource(SignalController,'/control')
