@@ -5,9 +5,6 @@ $(document).ready(function () {
         var operation = this.id;
         var signal = $(this).parent().parent().attr('id');
         var source = $("#sourceSelection").find(".btn-primary").text();
-        console.log(operation);
-        console.log(signal);
-        console.log(source);
         e.preventDefault();
         $.ajax({
             type: "POST",
@@ -34,9 +31,6 @@ $(document).ready(function () {
             alert("Please input name before submitting");
             return;
         }
-
-        console.log(name);
-        console.log(randomized);
         e.preventDefault();
         $.ajax({
             type: "POST",
