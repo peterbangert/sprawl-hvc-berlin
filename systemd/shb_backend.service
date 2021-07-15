@@ -4,6 +4,7 @@ After=network.target
 
 [Service]
 User=student-super
-Group=student-super
+Group=www-data
+Environment="PATH=/home/student-super/.local/bin"
 WorkingDirectory=/home/student-super/sprawl-hvc-berlin/backend
 ExecStart=gunicorn --workers 3 --bind unix:backend.sock -m 007 wsgi:app
