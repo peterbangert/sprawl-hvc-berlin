@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
 import logging
+import os
 
 from pythonosc import dispatcher
 from pythonosc import osc_server, udp_client
@@ -19,7 +20,7 @@ MIN_DISTANCE = -50
 MULTIPLIER_DISTANCE = 1.0
 MULTIPLIER_AZIMUTH = 0.25
 
-
+# Create App
 app = Flask(__name__)
 api = Api(app,prefix="/api/v1")
 CORS(app)
@@ -46,7 +47,12 @@ submit_args.add_argument('7')
 
 
 # Setup Logging
-logging.basicConfig(filename='log/interactive-app_backend.log', level=logging.DEBUG)
+logfile = 'log/shb_backend.log'
+basedir = os.path.dirname(logfile)
+if not os.path.exists(basedir):
+    os.makedirs(basedir)
+open(logfile,'a').close()
+logging.basicConfig(filename=logfile, level=logging.DEBUG)
 
 # OSC dispatcher must be global
 dispatcher = dispatcher.Dispatcher()
