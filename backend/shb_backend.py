@@ -19,10 +19,10 @@ MAX_DISTANCE = 10
 MIN_DISTANCE = 0
 MULTIPLIER_DISTANCE = 1.0
 MULTIPLIER_AZIMUTH = 0.25
-MAX_GAIN = 1.0
-MIN_GAIN = 0.0
+MAX_GAIN = 3.0
+MIN_GAIN = 0.5
 MULTIPLIER_GAIN = 0.1
-MAX_ELEVATION = 10
+MAX_ELEVATION = 20
 MIN_ELEVATION = 0
 MULTIPLIER_ELEVATION = 1.0
 
@@ -72,7 +72,7 @@ for i in range(1,12):
         'reverb': 0,
         'azimuth':0,
         'distance':0,
-        'gain':0,
+        'gain':0.5,
         'elevation':0
     }
 
