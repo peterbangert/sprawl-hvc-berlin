@@ -44,40 +44,27 @@ Server.killAll;
 s.boot;
 
 s.waitForBoot({
-	
-	~control_dist_BUS     = Bus.control(s,~nSystems);
-
-	// reverb send level
-	~control_reverb_BUS   = Bus.control(s,~nSystems);
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// Synthdefs: 3rd oder encoder and decoder
 	/////////////////////////////////////////////////////////////////////////////////
 
+	SynthDef(\hoa_mono_encoder,
+		{
+			|
+			in_bus     = nil, // audio input bus index
+			out_bus    = nil, // audio output bus index
+			//
+			azim       = 0,
+			elev       = 0,
+			dist       = 1
+			|
 
+			var sound = In.ar(in_bus);
+			var level = (0.75/(max(0,dist)+1.0));
+			var bform = HOASphericalHarmonics.coefN3D(~hoa_order, azim, elev) * sound * level;
 
-	SynthDef(\hoa_mono_encoder_3,
-	{
-		|
-		in_bus     = 0,
-		out_bus    = 0,
-		reverb_bus = 0,
-		//
-		azim    = 0,
-		elev    = 0,
-		dist    = 1,
-		gain    = 0.5,
-		reverb  = 0.1
-		|
-
-		var sound = gain * In.ar(in_bus);
-
-		var level =  0.5*min(1,(1/(max(0,dist))));
-
-		var bform = HOASphericalHarmonics.coefN3D(3, azim, elev) * sound * level;
-
-		Out.ar(out_bus, bform);
-		Out.ar(reverb_bus, reverb*sound);
+			Out.ar(out_bus, bform);
 
 	}).add;
 
@@ -96,29 +83,7 @@ s.waitForBoot({
 			Out.ar(out_bus, sig);
 
 	}).add;
-
-	SynthDef(\convolve,
-	{
-		|
-		bufnum_1 = nil,
-		bufnum_2 = nil,
-		inbus_1  = 0,
-		inbus_2  = 1,
-		outbus_1 = 0,
-		outbus_2 = 1,
-		fftsize  = 1024
-		|
-
-		var input1 =   In.ar(inbus_1);
-		var input2 =   In.ar(inbus_2);
-
-		Out.ar(outbus_1, PartConv.ar(input1, fftsize, bufnum_1, 0.05));
-		Out.ar(outbus_2, PartConv.ar(input2, fftsize, bufnum_2, 0.05));
-	}
-).add;
-
 	s.sync;
-
 
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -135,11 +100,10 @@ s.waitForBoot({
 	// add an encoder for each source
 	~binaural_encoders = Array.fill(~nSources,	{arg i;
 
-		Synth(\hoa_mono_encoder_3,
+		Synth(\hoa_mono_encoder,
 			[
 				\in_bus,     s.options.numOutputBusChannels + i,
 				\out_bus,    ~ambi_BUS.index,
-				\reverb_bus, ~reverb_send_BUS
 			],
 			target: ~encoder_GROUP)
 	});
@@ -167,92 +131,6 @@ s.waitForBoot({
 	~binaural_encoders.do({arg e, i; e.map(\azim, ~azim_BUS.index+i)});
 	~binaural_encoders.do({arg e, i; e.map(\elev, ~elev_BUS.index+i)});
 	~binaural_encoders.do({arg e, i; e.map(\dist, ~dist_BUS.index+i)});
-	~binaural_encoders.do({arg e, i; e.map(\reverb, ~control_reverb_BUS.index+i)});
-
-
-	////////////////////////////////////////////////////////////////////
-	// partitioned convolution stuff (to be used with convolve-synthdef)
-	////////////////////////////////////////////////////////////////////
-
-
-	~fftsize = 4096;
-
-	~reverb_FILE =  ~root_DIR++"WAV/IR/kirche_1.wav";
-
-	Buffer.read(s, ~reverb_FILE);
-
-	s.sync;
-
-	~conv_func_L =  {
-
-		var ir, irbuffer, bufsize;
-
-		irbuffer = Buffer.readChannel(s, ~reverb_FILE, channels: [0]);
-
-		s.sync;
-
-		bufsize = PartConv.calcBufSize(~fftsize, irbuffer);
-
-		// ~numpartitions= PartConv.calcNumPartitions(~fftsize, irbuffer);
-
-		~irspectrumL = Buffer.alloc(s, bufsize, 1);
-		~irspectrumL.preparePartConv(irbuffer, ~fftsize);
-
-		s.sync;
-
-		irbuffer.free;
-
-	}.fork;
-
-	s.sync;
-
-	2.sleep;
-
-
-	~conv_func_R =  {
-
-		var ir, irbuffer, bufsize;
-
-		irbuffer = Buffer.readChannel(s, ~reverb_FILE, channels: [1]);
-
-		s.sync;
-
-		bufsize = PartConv.calcBufSize(~fftsize, irbuffer);
-
-		// ~numpartitions= PartConv.calcNumPartitions(~fftsize, irbuffer);
-
-		~irspectrumR = Buffer.alloc(s, bufsize, 1);
-		~irspectrumR.preparePartConv(irbuffer, ~fftsize);
-
-		s.sync;
-		irbuffer.free;
-
-	}.fork;
-
-	s.sync;
-
-
-	2.sleep;
-
-	postln('Adding convolution reverb!');
-	~conv = Synth.new(\convolve,
-		[
-			\outbus_1, 0,
-			\outbus_2, 1,
-			\bufnum_1, ~irspectrumL.bufnum,
-			\bufnum_2, ~irspectrumR.bufnum,
-			\fftsize,  ~fftsize
-		],
-		target: ~spatial_GROUP);
-
-	s.sync;
-
-	~conv.set(\inbus_1, ~reverb_send_BUS.index);
-	~conv.set(\inbus_2, ~reverb_send_BUS.index);
-
-	~conv.set(\outbus_1, 82);
-	~conv.set(\outbus_2, 83);
-
 
 	thisProcess.openUDPPort(57121);
 	"listening for OSC on ports: ".post;
@@ -281,14 +159,6 @@ s.waitForBoot({
 			var dist = msg[2];
 			~dist_BUS.setAt(msg[1], dist);
 	    }, '/source/dist');
-
-	// OSC listener for reverb
-	OSCdef('reverb',
-		{
-			arg msg, time, addr, recvPort;
-			var dist = msg[2];
-			~reverb_BUS.setAt(msg[1], dist);
-	    }, '/source/reverb');
 
 	///////////////////////////////////////////////////////////////////////a//////////
 	// Broadcast
