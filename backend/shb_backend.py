@@ -19,9 +19,9 @@ MAX_DISTANCE = 10
 MIN_DISTANCE = 0
 MULTIPLIER_DISTANCE = 1.0
 MULTIPLIER_AZIMUTH = 0.25
-MAX_GAIN = 3.0
+MAX_GAIN = 5.0
 MIN_GAIN = 0.5
-MULTIPLIER_GAIN = 0.1
+MULTIPLIER_GAIN = 0.2
 MAX_ELEVATION = 20
 MIN_ELEVATION = 0
 MULTIPLIER_ELEVATION = 1.0
@@ -100,7 +100,7 @@ class SignalController(Resource):
         else :
             current_value = 0
             if args.signal == 'gain':
-                current_value = MIN_GAIN
+                current_value = 1.0
 
         if args.signal == 'azimuth':
             endpoint = "/source/azim"
