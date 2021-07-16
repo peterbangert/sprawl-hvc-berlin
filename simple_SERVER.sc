@@ -54,7 +54,7 @@ s.waitForBoot({
 	// Synthdefs: 3rd oder encoder and decoder
 	/////////////////////////////////////////////////////////////////////////////////
 
-	SynthDef(\hoa_mono_encoder,
+	SynthDef(\hoa_mono_encoder_3,
 		{
 			|
 			in_bus     = nil, // audio input bus index
