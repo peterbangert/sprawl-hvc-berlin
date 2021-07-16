@@ -188,7 +188,7 @@ class ResetAll(Resource):
                 'elevation':DEFAULT_ELEVATION
             }
             for index, val  in enumerate(endpoints):
-                app.logger.info("Resetting {} {}".format(val, default_values[index]))
+                app.logger.info("Resetting idx {} @ {} w/ {}".format(i,val, default_values[index]))
                 client.send_message(val, [(i-1) *2, default_values[index]])
                 client.send_message(val, [(i-1) *2 +1, default_values[index]])
 
