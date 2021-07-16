@@ -99,6 +99,8 @@ class SignalController(Resource):
             additive =-1
         else :
             current_value = 0
+            elif args.signal == 'gain':
+                current_value = MIN_GAIN
 
         if args.signal == 'azimuth':
             endpoint = "/source/azim"
