@@ -287,8 +287,8 @@ s.waitForBoot({
 	OSCdef('reverb',
 		{
 			arg msg, time, addr, recvPort;
-			var dist = msg[2];
-			~reverb_BUS.setAt(msg[1], dist);
+			var reverb = msg[2];
+			~control_reverb_BUS.setAt(msg[1], reverb);
 	    }, '/source/reverb');
 
 	///////////////////////////////////////////////////////////////////////a//////////
