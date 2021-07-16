@@ -45,10 +45,11 @@ s.boot;
 
 s.waitForBoot({
 	
-	~control_dist_BUS     = Bus.control(s,~nSystems);
-
-	// reverb send level
+		// reverb send level
 	~control_reverb_BUS   = Bus.control(s,~nSystems);
+
+	// audio reverb bus
+	~reverb_send_BUS      = Bus.audio(s,2);
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// Synthdefs: 3rd oder encoder and decoder
