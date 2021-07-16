@@ -244,7 +244,7 @@ s.waitForBoot({
 			\bufnum_2, ~irspectrumR.bufnum,
 			\fftsize,  ~fftsize
 		],
-		target: ~spatial_GROUP);
+		target: ~encoder_GROUP);
 
 	s.sync;
 
