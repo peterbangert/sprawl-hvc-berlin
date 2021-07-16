@@ -176,7 +176,7 @@ class ResetAll(Resource):
     def post(self):
         app.logger.info("Resetting All")
         endpoints = ["/source/elev","/source/azim","/source/dist","/source/reverb","/source/gain"] 
-        default_values = [DEFAULT_REVERB,DEFAULT_AZIMUTH,DEFAULT_DISTANCE,DEFAULT_GAIN,DEFAULT_ELEVATION]
+        default_values = [DEFAULT_ELEVATION,DEFAULT_AZIMUTH,DEFAULT_DISTANCE,DEFAULT_REVERB,DEFAULT_GAIN]
         client = udp_client.SimpleUDPClient(SC_IP, SC_PORT)
 
         for i in range(1,12):
@@ -188,6 +188,7 @@ class ResetAll(Resource):
                 'elevation':DEFAULT_ELEVATION
             }
             for index, val  in enumerate(endpoints):
+                app.logger.info("Resetting {} {}".format(val, default_values[index]))
                 client.send_message(val, [(i-1) *2, default_values[index]])
                 client.send_message(val, [(i-1) *2 +1, default_values[index]])
 
