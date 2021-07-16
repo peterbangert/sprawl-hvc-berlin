@@ -146,12 +146,17 @@ s.waitForBoot({
 	});
 	s.sync;
 
+	~spatial_GROUP = Group.after(~encoder_GROUP);
+
+	s.sync;
+
 	// add one decoder after the encoder group
-	~decoder = Synth.after(~encoder_GROUP, \hoa_binaural_decoder,
+	~decoder = Synth(\hoa_binaural_decoder,
 		[
 			\in_bus,  ~ambi_BUS.index,
 			\out_bus, 0,
-	]);
+		],
+		target: ~spatial_GROUP););
 	s.sync;
 
 
@@ -244,7 +249,7 @@ s.waitForBoot({
 			\bufnum_2, ~irspectrumR.bufnum,
 			\fftsize,  ~fftsize
 		],
-		target: ~encoder_GROUP);
+		target: ~spatial_GROUP);
 
 	s.sync;
 
