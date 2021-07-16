@@ -88,7 +88,29 @@ s.waitForBoot({
 			Out.ar(out_bus, sig);
 
 	}).add;
+
+	SynthDef(\convolve,
+	{
+		|
+		bufnum_1 = nil,
+		bufnum_2 = nil,
+		inbus_1  = 0,
+		inbus_2  = 1,
+		outbus_1 = 0,
+		outbus_2 = 1,
+		fftsize  = 1024
+		|
+
+		var input1 =   In.ar(inbus_1);
+		var input2 =   In.ar(inbus_2);
+
+		Out.ar(outbus_1, PartConv.ar(input1, fftsize, bufnum_1, 0.05));
+		Out.ar(outbus_2, PartConv.ar(input2, fftsize, bufnum_2, 0.05));
+	}
+).add;
+
 	s.sync;
+
 
 
 	/////////////////////////////////////////////////////////////////////////////////
