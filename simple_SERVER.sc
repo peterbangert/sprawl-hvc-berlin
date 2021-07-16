@@ -44,6 +44,11 @@ Server.killAll;
 s.boot;
 
 s.waitForBoot({
+	
+	~control_dist_BUS     = Bus.control(s,~nSystems);
+
+	// reverb send level
+	~control_reverb_BUS   = Bus.control(s,~nSystems);
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// Synthdefs: 3rd oder encoder and decoder
@@ -127,13 +132,12 @@ s.waitForBoot({
 	~azim_BUS = Bus.control(s, ~nSources);
 	~elev_BUS = Bus.control(s, ~nSources);
 	~dist_BUS = Bus.control(s, ~nSources);
-	~reverb_BUS = Bus.control(s, ~nSources);
 
 	// map buses to encoder parameters
 	~binaural_encoders.do({arg e, i; e.map(\azim, ~azim_BUS.index+i)});
 	~binaural_encoders.do({arg e, i; e.map(\elev, ~elev_BUS.index+i)});
 	~binaural_encoders.do({arg e, i; e.map(\dist, ~dist_BUS.index+i)});
-	~binaural_encoders.do({arg e, i; e.map(\reverb, ~reverb_BUS.index+i)});
+	~binaural_encoders.do({arg e, i; e.map(\reverb, ~control_reverb_BUS.index+i)});
 
 
 	////////////////////////////////////////////////////////////////////
