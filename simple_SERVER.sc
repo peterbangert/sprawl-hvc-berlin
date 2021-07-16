@@ -156,7 +156,7 @@ s.waitForBoot({
 			\in_bus,  ~ambi_BUS.index,
 			\out_bus, 0,
 		],
-		target: ~spatial_GROUP););
+		target: ~spatial_GROUP);
 	s.sync;
 
 
