@@ -18,9 +18,12 @@ MULTIPLIER_REVERB = 0.1
 MAX_DISTANCE = 10
 MIN_DISTANCE = 0
 MULTIPLIER_DISTANCE = 1.0
+DEFAULT_DISTANCE = 1.0
 MULTIPLIER_AZIMUTH = 0.25
+DEFAULT_AZIMUTH = 1.0
 MAX_GAIN = 5.0
 MIN_GAIN = 0.5
+DEFAULT_GAIN = 1.0
 MULTIPLIER_GAIN = 0.2
 MAX_ELEVATION = 20
 MIN_ELEVATION = 0
@@ -100,7 +103,11 @@ class SignalController(Resource):
         else :
             current_value = 0
             if args.signal == 'gain':
-                current_value = 1.0
+                current_value = DEFAULT_GAIN
+            if args.signal == 'azimuth':
+                current_value = DEFAULT_AZIMUTH
+            if args.signal == 'distance':
+                current_value = DEFAULT_DISTANCE
 
         if args.signal == 'azimuth':
             endpoint = "/source/azim"
