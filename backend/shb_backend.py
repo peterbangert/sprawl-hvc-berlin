@@ -15,6 +15,7 @@ SC_PORT = 57121
 MAX_REVERB = 3.0
 MIN_REVERB = 0.0
 MULTIPLIER_REVERB = 0.1
+DEFAULT_REVERB = 0.1
 MAX_DISTANCE = 10
 MIN_DISTANCE = 0
 MULTIPLIER_DISTANCE = 1.0
@@ -28,6 +29,7 @@ MULTIPLIER_GAIN = 0.2
 MAX_ELEVATION = 20
 MIN_ELEVATION = 0
 MULTIPLIER_ELEVATION = 1.0
+DEFAULT_ELEVATION = 0.0
 
 # Create App
 app = Flask(__name__)
@@ -170,10 +172,32 @@ class PostSubmit(Resource):
         app.logger.info(results)
         return {"Submission from {}".format(args.name):"successful"}
 
+class ResetAll(Resource):
+    def post(self):
+        app.logger.info("Resetting All")
+        endpoints = ["/source/elev","/source/azim","/source/dist","/source/reverb","/source/gain"] 
+        default_values = [DEFAULT_REVERB,DEFAULT_AZIMUTH,DEFAULT_DISTANCE,DEFAULT_GAIN,DEFAULT_ELEVATION]
+        client = udp_client.SimpleUDPClient(SC_IP, SC_PORT)
+
+        for i in range(1,12):
+            sources[i] = {
+                'reverb': DEFAULT_REVERB,
+                'azimuth':DEFAULT_AZIMUTH,
+                'distance':DEFAULT_DISTANCE,
+                'gain':DEFAULT_GAIN,
+                'elevation':DEFAULT_ELEVATION
+            }
+            for index, val  in enumerate(endpoints):
+                client.send_message(val, [(i-1) *2, default_values[index]])
+                client.send_message(val, [(i-1) *2 +1, default_values[index]])
+
+        return {"Reset All":"successful"}
+
 
 api.add_resource(SignalController,'/control')
 api.add_resource(GetResults,'/results')
 api.add_resource(PostSubmit,'/submit')
+api.add_resource(ResetAll,'/resetall')
 
 
 if __name__ == '__main__':
