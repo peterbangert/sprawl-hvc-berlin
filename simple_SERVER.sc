@@ -256,8 +256,8 @@ s.waitForBoot({
 	~conv.set(\inbus_1, ~reverb_send_BUS.index);
 	~conv.set(\inbus_2, ~reverb_send_BUS.index);
 
-	~conv.set(\outbus_1, 82);
-	~conv.set(\outbus_2, 83);
+	~conv.set(\outbus_1, 0);
+	~conv.set(\outbus_2, 1);
 
 
 	thisProcess.openUDPPort(57121);
