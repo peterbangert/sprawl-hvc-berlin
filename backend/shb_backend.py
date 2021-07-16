@@ -14,11 +14,17 @@ SC_PORT = 57121
 # Control Boundaries
 MAX_REVERB = 3.0
 MIN_REVERB = 0.0
-MULTIPLIER_REVERB = 1.0
-MAX_DISTANCE = 50
-MIN_DISTANCE = -50
+MULTIPLIER_REVERB = 0.1
+MAX_DISTANCE = 10
+MIN_DISTANCE = 0
 MULTIPLIER_DISTANCE = 1.0
 MULTIPLIER_AZIMUTH = 0.25
+MAX_GAIN = 1.0
+MIN_GAIN = 0.0
+MULTIPLIER_GAIN = 0.1
+MAX_ELEVATION = 10
+MIN_ELEVATION = 0
+MULTIPLIER_ELEVATION = 1.0
 
 # Create App
 app = Flask(__name__)
@@ -65,7 +71,9 @@ for i in range(1,12):
     sources[i] = {
         'reverb': 0,
         'azimuth':0,
-        'distance':0
+        'distance':0,
+        'gain':0,
+        'elevation':0
     }
 
 # Solution for Matching Game
@@ -104,6 +112,16 @@ class SignalController(Resource):
             endpoint = "/source/dist"
             additive = additive * MULTIPLIER_DISTANCE
             if current_value + additive > MAX_DISTANCE or current_value + additive < MIN_DISTANCE:
+                additive =  0
+        elif args.signal == 'gain':
+            endpoint = "/source/gain"
+            additive = additive * MULTIPLIER_GAIN
+            if current_value + additive > MAX_GAIN or current_value + additive < MIN_GAIN:
+                additive =  0
+        elif args.signal == 'elevation':
+            endpoint = "/source/elev"
+            additive = additive * MULTIPLIER_ELEVATION
+            if current_value + additive > MAX_ELEVATION or current_value + additive < MIN_ELEVATION:
                 additive =  0
         else:
             app.logger.info("FAILURE, Incorrect signal: {} {} {}".format(args.operation,args.signal,str(args.source)))

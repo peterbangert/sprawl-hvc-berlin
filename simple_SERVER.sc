@@ -168,11 +168,13 @@ s.waitForBoot({
 	~azim_BUS = Bus.control(s, ~nSources);
 	~elev_BUS = Bus.control(s, ~nSources);
 	~dist_BUS = Bus.control(s, ~nSources);
+	~gain_BUS = Bus.control(s, ~nSources);
 
 	// map buses to encoder parameters
 	~binaural_encoders.do({arg e, i; e.map(\azim, ~azim_BUS.index+i)});
 	~binaural_encoders.do({arg e, i; e.map(\elev, ~elev_BUS.index+i)});
 	~binaural_encoders.do({arg e, i; e.map(\dist, ~dist_BUS.index+i)});
+	~binaural_encoders.do({arg e, i; e.map(\gain, ~gain_BUS.index+i)});
 	~binaural_encoders.do({arg e, i; e.map(\reverb, ~control_reverb_BUS.index+i)});
 
 
@@ -287,6 +289,14 @@ s.waitForBoot({
 			var dist = msg[2];
 			~dist_BUS.setAt(msg[1], dist);
 	    }, '/source/dist');
+
+		// OSC listener for distance
+	OSCdef('gain',
+		{
+			arg msg, time, addr, recvPort;
+			var gain = msg[2];
+			~gain_BUS.setAt(msg[1], gain);
+	    }, '/source/gain');
 
 	// OSC listener for reverb
 	OSCdef('reverb',
