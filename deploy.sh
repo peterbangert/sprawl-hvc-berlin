@@ -12,4 +12,5 @@ echo "Starting Backend"
 # Start Flask
 sudo systemctl restart shb_backend
 
-#sclang simple_SERVER.sc
+# Reset All sources and signals
+curl -X POST sprawl.hvc.berlin/api/v1/resetall
