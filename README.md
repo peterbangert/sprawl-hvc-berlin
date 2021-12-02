@@ -7,14 +7,16 @@
 
 ### Description
 
-The Audience Control project is a project designed to allow and encourage viewer participation in the performance. 
+The Audience Control project is a project designed to introduce randomness in live performances over the SPRAWL system by allowing the audience to anonymously control audio signals.
 
 
-1. First, the user can select one of the 8 various performers on the top of the screen by the numbered buttons
-2. The controls will adjust the spatial signals of the respective performer. The audio controls provided are reverb, distance, and azimuth.
+1. First, visit [sprawl.hvc.berlin](http://sprawl.hvc.berlin/) and select one of the 11 various performers on the top of the screen by the numbered buttons
+2. The controls will adjust the spatial signals of the respective performer, the options being:
     - Reverb controls can increase or decrease the amount of signal reflection in the acoustic space.
+    - Gain controls the input of the digital source, overall effects distortion. 
     - Distance controls virtually how far the performer is from a center point
-    - Azimuth controls at which angle the performer is from 0 degrees.
+    - Elevation controls height from center point.
+    - Rotate controls at which angle the performer is from 0 degrees.
     
 3. Guess which audio source belongs to which performer shown on screen, and the results will be displayed when the performance is complete.
 
@@ -25,15 +27,22 @@ The Audience Control project is a project designed to allow and encourage viewer
   <img width="650" height="300" src="public/images/diagram.png">
 </p>
 
+### How to Setup
+
+On the host machine install:
+
+1. [nginx](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
+
+2. Flask and Gunicorn
+
+  `python3 -m pip install Flask gunicorn`
+
+3. Install this repository in your home directory. 
+  - the current configurations are designed to work with username student-super
+
+4. Run `make setup`
+
 ### How to Deploy
 
-Run `deploy.sh` in downloaded directory.
+Run `make deploy`
 
-
-## TODO
-
-1. change button UI
-2. use UWSGI for flask to start
-3. fix endpoints for flask/supercollider thing
-4. Add guessing game
-5. Add backend thing for guessing game
